@@ -1,4 +1,4 @@
-package br.com.vitheka.ms_rh_employee_producer;
+package br.com.vitheka.ms_rh_employee_producer.IT;
 
 import br.com.vitheka.ms_rh_employee_producer.requestDto.EmployeeRequest;
 import br.com.vitheka.ms_rh_employee_producer.service.EmployeeService;
