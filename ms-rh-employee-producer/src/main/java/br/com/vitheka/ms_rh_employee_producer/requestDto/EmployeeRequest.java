@@ -1,15 +1,22 @@
 package br.com.vitheka.ms_rh_employee_producer.requestDto;
 
 import br.com.vitheka.ms_rh_employee_producer.enums.TypeEmployee;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 public class EmployeeRequest {
 
+    @NotNull
     private Long departmentId;
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String email;
+    @NotBlank
     private String phoneNumber;
     private LocalDateTime hireDate;
     private Double salary;

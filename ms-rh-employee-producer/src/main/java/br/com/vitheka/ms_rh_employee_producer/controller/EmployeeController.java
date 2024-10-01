@@ -3,6 +3,7 @@ package br.com.vitheka.ms_rh_employee_producer.controller;
 import br.com.vitheka.ms_rh_employee_producer.requestDto.EmployeeRequest;
 import br.com.vitheka.ms_rh_employee_producer.service.EmployeeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createEmployeeKafka(@RequestBody EmployeeRequest request) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public ResponseEntity<Void> createEmployeeKafka(@RequestBody @Valid EmployeeRequest request) throws JsonProcessingException, ExecutionException, InterruptedException {
         return ResponseEntity.ok(employeeService.createEmployee(request));
     }
 
