@@ -22,13 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeControllerUnitTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @MockBean
-    EmployeeService employeeService;
+    private EmployeeService employeeService;
 
     private EmployeeRequest employee;
 
@@ -77,7 +77,7 @@ class EmployeeControllerUnitTest {
     }
 
     @Test
-    void createEmployeeKafka_invalidArguments() throws Exception {
+    void createEmployeeKafka_ThrowBadRequest_WhenInvalidArguments() throws Exception {
 
         var json = mapper.writeValueAsString(employeeInvalid);
 

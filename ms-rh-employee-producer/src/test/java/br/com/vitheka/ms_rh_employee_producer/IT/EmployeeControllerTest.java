@@ -35,13 +35,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EmployeeControllerTest {
 
     @Autowired
-    TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate;
 
     @Autowired
-    EmployeeService employeeService;
+    private EmployeeService employeeService;
 
     @Autowired
-    EmbeddedKafkaBroker embeddedKafkaBroker;
+    private EmbeddedKafkaBroker embeddedKafkaBroker;
 
     private Consumer<Integer, String> consumer;
 

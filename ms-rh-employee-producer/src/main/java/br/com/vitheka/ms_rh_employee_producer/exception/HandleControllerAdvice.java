@@ -19,7 +19,7 @@ public class HandleControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleException(MethodArgumentNotValidException ex) {
 
-        var errorMessage = ex.getBindingResult()
+        var errorMessage = Objects.requireNonNull(ex.getBindingResult())
                 .getFieldErrors()
                 .stream()
                 .map(fieldError -> fieldError
