@@ -1,4 +1,12 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${CLIENT_ID}
+            clientSecret: ${CLIENT_SECRET}
+
   kafka:
     topic: "employee-events"
     bootstrap-servers: localhost:29092

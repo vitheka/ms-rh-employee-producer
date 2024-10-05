@@ -1,5 +1,6 @@
 package br.com.vitheka.ms_rh_employee_producer.IT;
 
+import br.com.vitheka.ms_rh_employee_producer.enums.TypeEmployee;
 import br.com.vitheka.ms_rh_employee_producer.requestDto.EmployeeRequest;
 import br.com.vitheka.ms_rh_employee_producer.service.EmployeeService;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -58,6 +59,8 @@ class EmployeeControllerTest {
         employee.setEmail("joao.silva@example.com");
         employee.setPhoneNumber("123456789");
         employee.setHireDate(LocalDateTime.now());
+        employee.setTypeEmployee(TypeEmployee.MEDIUM);
+        employee.setDepartmentId(1L);
         employee.setSalary(5000.00);
 
         Map<String, Object> configs = new HashMap<>(KafkaTestUtils.consumerProps("group1", "true", embeddedKafkaBroker));
