@@ -1,27 +1,28 @@
 package br.com.vitheka.ms_rh_employee_producer.IT;
 
-import br.com.vitheka.ms_rh_employee_producer.enums.TypeEmployee;
+import br.com.vitheka.ms_rh_employee_producer.commons.EmployeeUtil;
+import br.com.vitheka.ms_rh_employee_producer.enums.EmployeeEventType;
 import br.com.vitheka.ms_rh_employee_producer.requestDto.EmployeeRequest;
-import br.com.vitheka.ms_rh_employee_producer.service.EmployeeService;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.TestPropertySource;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,16 +34,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "spring.kafka.producer.bootstrap-servers=${spring.embedded.kafka.brokers}",
         "spring.kafka.admin.properties.bootstrap.servers=${spring.embedded.kafka.brokers}"
 })
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class EmployeeControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private EmployeeService employeeService;
+    private EmbeddedKafkaBroker embeddedKafkaBroker;
 
     @Autowired
-    private EmbeddedKafkaBroker embeddedKafkaBroker;
+    private EmployeeUtil employeeUtil;
 
     private Consumer<Integer, String> consumer;
 
@@ -52,16 +54,7 @@ class EmployeeControllerTest {
     @BeforeEach
     void init() {
 
-        employee = new EmployeeRequest();
-
-        employee.setFirstName("João");
-        employee.setLastName("Silva");
-        employee.setEmail("joao.silva@example.com");
-        employee.setPhoneNumber("123456789");
-        employee.setHireDate(LocalDateTime.now());
-        employee.setTypeEmployee(TypeEmployee.MEDIUM);
-        employee.setDepartmentId(1L);
-        employee.setSalary(5000.00);
+        employee = employeeUtil.newEmployeeRequestCreate();
 
         Map<String, Object> configs = new HashMap<>(KafkaTestUtils.consumerProps("group1", "true", embeddedKafkaBroker));
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
@@ -76,6 +69,8 @@ class EmployeeControllerTest {
     }
 
     @Test
+    @Order(1)
+    @DisplayName("cria evento employee e envia quando sucesso")
     void createEmployeeKafka()  {
 
         var headers = new HttpHeaders();
@@ -92,6 +87,32 @@ class EmployeeControllerTest {
         ConsumerRecords<Integer, String> consumerRecords = KafkaTestUtils.getRecords(consumer);
 
         assert consumerRecords.count() == 1;
+
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("atualiza evento employee e envia quando sucesso")
+    void updateEmployeeKafka()  {
+
+        var id = 1L;
+
+        employee.setEmployeeEventType(EmployeeEventType.UPDATE);
+
+        var headers = new HttpHeaders();
+        headers.set("content-type", MediaType.APPLICATION_JSON.toString());
+
+        var httpEntity = new HttpEntity<>(employee, headers);
+
+        var response = restTemplate
+                .exchange("/employees/" + id, HttpMethod.PUT,
+                        httpEntity, EmployeeRequest.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        ConsumerRecords<Integer, String> consumerRecords = KafkaTestUtils.getRecords(consumer);
+
+        assert consumerRecords.count() == 2;
 
     }
 }

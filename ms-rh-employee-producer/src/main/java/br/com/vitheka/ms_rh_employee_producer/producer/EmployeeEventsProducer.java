@@ -49,6 +49,7 @@ public class EmployeeEventsProducer {
                 }));
     }
 
+
     //1. blocking call - get metadata about the kafka cluster
     //2. Block and wait until message is sent to the kafka
     public SendResult<Integer, String> approach2(EmployeeRequest request) throws JsonProcessingException, ExecutionException, InterruptedException {

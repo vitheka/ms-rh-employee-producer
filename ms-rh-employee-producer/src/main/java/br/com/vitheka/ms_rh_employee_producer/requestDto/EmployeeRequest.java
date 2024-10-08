@@ -1,5 +1,6 @@
 package br.com.vitheka.ms_rh_employee_producer.requestDto;
 
+import br.com.vitheka.ms_rh_employee_producer.enums.EmployeeEventType;
 import br.com.vitheka.ms_rh_employee_producer.enums.TypeEmployee;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,8 @@ import java.time.LocalDateTime;
 
 public class EmployeeRequest {
 
+
+    private Long eventId;
     @NotNull
     private Long departmentId;
     @NotBlank
@@ -21,7 +24,15 @@ public class EmployeeRequest {
     private LocalDateTime hireDate;
     private Double salary;
     private TypeEmployee typeEmployee;
+    private EmployeeEventType employeeEventType;
 
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
 
     public Long getDepartmentId() {
         return departmentId;
@@ -85,5 +96,13 @@ public class EmployeeRequest {
 
     public void setTypeEmployee(TypeEmployee typeEmployee) {
         this.typeEmployee = typeEmployee;
+    }
+
+    public EmployeeEventType getEmployeeEventType() {
+        return employeeEventType;
+    }
+
+    public void setEmployeeEventType(EmployeeEventType employeeEventType) {
+        this.employeeEventType = employeeEventType;
     }
 }
